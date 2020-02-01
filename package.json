@@ -30,6 +30,10 @@
 		"onCommand:ngHelper.enableProdMode"
 	],
 	"main": "./out/extension.js",
+	"icon": "images/logo.jpg",
+	"repository": {
+		"url": "https://github.com/saivishnutammineni/ng-cli-helper"
+	},
 	"contributes": {
 		"commands": [
 			{
