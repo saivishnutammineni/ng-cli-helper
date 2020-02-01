@@ -1,0 +1,110 @@
+{
+	"name": "ng-cli-helper",
+	"displayName": "Angular CLI Helper",
+	"description": "You no longer have to open a terminal, specify the path to create things like components, modules, services etc \n and the project to create them in a multi project angular repo",
+	"version": "1.0.0",
+	"publisher": "SaiVishnu",
+	"engines": {
+		"vscode": "^1.32.0"
+	},
+	"keywords": [
+		"Angular",
+		"Angular CLI",
+		"Angular CLI Help"
+	],
+	"author": {
+		"name": "Sai Vishnu"
+	},
+	"enableProposedApi": true,
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:terminalTest.createAndSend",
+		"onCommand:ngHelper.createComponent",
+		"onCommand:ngHelper.createModule",
+		"onCommand:ngHelper.createService",
+		"onCommand:ngHelper.createDirective",
+		"onCommand:ngHelper.createPipe",
+		"onCommand:ngHelper.enableDebugMode",
+		"onCommand:ngHelper.enableProdMode"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "terminalTest.createAndSend",
+				"title": "Terminal API: Create Terminal and Immediately Send"
+			},
+			{
+				"command": "ngHelper.createComponent",
+				"title": "Create Component"
+			},
+			{
+				"command": "ngHelper.createModule",
+				"title": "Create Module"
+			},
+			{
+				"command": "ngHelper.createService",
+				"title": "Create Service"
+			},
+			{
+				"command": "ngHelper.createDirective",
+				"title": "Create Directive"
+			},
+			{
+				"command": "ngHelper.createPipe",
+				"title": "Create Pipe"
+			},
+			{
+				"command": "ngHelper.enableDebugMode",
+				"title": "Enable Debug For Angular CLI Helper"
+			},
+			{
+				"command": "ngHelper.enableProdMode",
+				"title": "Enable Prod Mode For Angular CLI Helper"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "ngHelper.createModule",
+					"group": "z_commands",
+					"when": "explorerResourceIsFolder"
+				},
+				{
+					"command": "ngHelper.createComponent",
+					"group": "z_commands",
+					"when": "explorerResourceIsFolder"
+				},
+				{
+					"command": "ngHelper.createService",
+					"group": "z_commands",
+					"when": "explorerResourceIsFolder"
+				},
+				{
+					"command": "ngHelper.createDirective",
+					"group": "z_commands",
+					"when": "explorerResourceIsFolder"
+				},
+				{
+					"command": "ngHelper.createPipe",
+					"group": "z_commands",
+					"when": "explorerResourceIsFolder"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc  -p ./",
+		"watch": "tsc -watch -p ./",
+		"lint": "tslint -p ./"
+	},
+	"devDependencies": {
+		"@types/node": "^6.0.40",
+		"@types/vscode": "^1.33.0",
+		"tslint": "^5.16.0",
+		"typescript": "^3.4.5"
+	}
+}
