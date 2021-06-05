@@ -2,10 +2,10 @@
 	"name": "ng-cli-helper",
 	"displayName": "Angular CLI Helper",
 	"description": "You no longer have to open a terminal, specify the path to create things like components, modules, services etc \n and the project to create them in a multi project angular repo",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"publisher": "SAIVISHNUCHOWDARYTAMMINENI",
 	"engines": {
-		"vscode": "^1.32.0"
+		"vscode": "^1.33.0"
 	},
 	"keywords": [
 		"Angular",
