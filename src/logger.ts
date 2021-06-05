@@ -13,7 +13,7 @@ export class Logger {
 
 	public debug(...args: any[]) {
 		if (Environment.environment === 'dev') {
-			console.log([`[${this.instanceName}]`,args]);
+			console.log(`[${this.instanceName}]`,args);
 		}
 	}
 }

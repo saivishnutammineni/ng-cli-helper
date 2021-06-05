@@ -19,12 +19,12 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:terminalTest.createAndSend",
 		"onCommand:ngHelper.createComponent",
 		"onCommand:ngHelper.createModule",
 		"onCommand:ngHelper.createService",
 		"onCommand:ngHelper.createDirective",
 		"onCommand:ngHelper.createPipe",
+		"onCommand:ngHelper.createGuard",
 		"onCommand:ngHelper.enableDebugMode",
 		"onCommand:ngHelper.enableProdMode"
 	],
@@ -60,6 +60,10 @@
 				"title": "Create Pipe"
 			},
 			{
+				"command": "ngHelper.createGuard",
+				"title": "Create Guard"
+			},
+			{
 				"command": "ngHelper.enableDebugMode",
 				"title": "Enable Debug For Angular CLI Helper"
 			},
@@ -92,6 +96,11 @@
 				},
 				{
 					"command": "ngHelper.createPipe",
+					"group": "z_commands",
+					"when": "explorerResourceIsFolder"
+				},
+				{
+					"command": "ngHelper.createGuard",
 					"group": "z_commands",
 					"when": "explorerResourceIsFolder"
 				}

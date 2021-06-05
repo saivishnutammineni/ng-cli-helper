@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Logger } from './logger';
 export class TerminalUtils {
 	private static _logger = Logger.getInstance('Terminal Utils');
+
 	public static createTerminal(termianlName: string, commandToRun: string) {
 		// check if terminal exists with same name
 		let terminal = this.getTerminal(termianlName);

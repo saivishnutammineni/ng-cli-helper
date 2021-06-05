@@ -9,13 +9,9 @@ import * as path from 'path';
 const logger = Logger.getInstance("Extension Main");
 // Extension TODO
 /**
- * 1. Find if it is possible to activate extension before a command is executed
- * so that the workspace angular json file can be read only once
- * 2. Store the angular.json file contents in vscode for a work space
- * 3. Disable or hide the commands from menu if workspace if work space is not a angular workspace
+ * 3. Disable or hide the commands from menu if workspace is not a angular workspace
  * 4. Better handling of paths
  * 5. Even when packaged in dev mode no logs are shown when the extension is used. find a way to enable logs
- * 6. Store error logs on a file or vscode
  */
 
 export function activate(context: vscode.ExtensionContext) {
@@ -47,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!angularJsonFile) {
 			return;
 		}
-		// take component name to create
+		// take module name to create
 		const moduleName = await IOUtils.getUserInput();
 		if (!moduleName) {
 			return;
@@ -73,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!angularJsonFile) {
 			return;
 		}
-		// take component name to create
+		// take service name to create
 		const serviceName = await IOUtils.getUserInput();
 		if (!serviceName) {
 			return;
@@ -82,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const commandData = await AngularProjectReader.getCLIPathBasedOnUserClick(angularJsonFile, clickedFolder.fsPath);
 		// create complete path with component name
 		const commandPath = (commandData.path.length !== 0 ? commandData.path + path.sep : '') + serviceName;
-		// generate the component
+		// generate the service
 		AngularProjectReader.generateAngularComponent('Service', commandPath, commandData.project);
 		const message = vscode.window.setStatusBarMessage('Service Generated!!!');
 		disposeMesageAfterTimeOut(message, 5000);
@@ -94,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!angularJsonFile) {
 			return;
 		}
-		// take component name to create
+		// take directive name to create
 		const directiveName = await IOUtils.getUserInput();
 		if (!directiveName) {
 			return;
@@ -103,7 +99,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const commandData = await AngularProjectReader.getCLIPathBasedOnUserClick(angularJsonFile, clickedFolder.fsPath);
 		// create complete path with component name
 		const commandPath = (commandData.path.length !== 0 ? commandData.path + path.sep : '') + directiveName;
-		// generate the component
+		// generate the directive
 		AngularProjectReader.generateAngularComponent('Directive', commandPath, commandData.project);
 		const message = vscode.window.setStatusBarMessage('Directive Generated!!!');
 		disposeMesageAfterTimeOut(message, 5000);
@@ -115,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!angularJsonFile) {
 			return;
 		}
-		// take component name to create
+		// take pipe name to create
 		const pipeName = await IOUtils.getUserInput();
 		if (!pipeName) {
 			return;
@@ -124,11 +120,33 @@ export function activate(context: vscode.ExtensionContext) {
 		const commandData = await AngularProjectReader.getCLIPathBasedOnUserClick(angularJsonFile, clickedFolder.fsPath);
 		// create complete path with component name
 		const commandPath = (commandData.path.length !== 0 ? commandData.path + path.sep : '') + pipeName;
-		// generate the component
+		// generate the pipe
 		AngularProjectReader.generateAngularComponent('Pipe', commandPath, commandData.project);
 		const message = vscode.window.setStatusBarMessage('Pipe Generated!!!');
 		disposeMesageAfterTimeOut(message, 5000);
 	}));
+
+	// create guard command
+	context.subscriptions.push(vscode.commands.registerCommand('ngHelper.createGuard', async (clickedFolder: vscode.Uri) => {
+		const angularJsonFile = await AngularProjectReader.getAngularJSONFile();
+		if (!angularJsonFile) {
+			return;
+		}
+		// take guard name to create
+		const guardName = await IOUtils.getUserInput();
+		if (!guardName) {
+			return;
+		}
+		// get path to create the component
+		const commandData = await AngularProjectReader.getCLIPathBasedOnUserClick(angularJsonFile, clickedFolder.fsPath);
+		// create complete path with component name
+		const commandPath = (commandData.path.length !== 0 ? commandData.path + path.sep : '') + guardName;
+		// generate the component
+		AngularProjectReader.generateAngularComponent('Guard', commandPath, commandData.project);
+		const message = vscode.window.setStatusBarMessage('Guard Generated!!!');
+		disposeMesageAfterTimeOut(message, 5000);
+	}));
+
 
 	// enabling debug mode
 	context.subscriptions.push(vscode.commands.registerCommand('ngHelper.enableDebugMode', () => {

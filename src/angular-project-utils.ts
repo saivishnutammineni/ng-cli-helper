@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { Logger } from "./logger";
 import { TerminalUtils } from "./terminal-utils";
 import * as path from 'path';
-type AngularComponentType = 'Component' | 'Directive' | 'Service' | 'Module' | 'Pipe';
+type AngularComponentType = 'Component' | 'Directive' | 'Service' | 'Module' | 'Pipe' | 'Guard';
 export class AngularProjectReader {
 	private static _logger = Logger.getInstance('Angular Project Reader');
 
@@ -14,15 +14,14 @@ export class AngularProjectReader {
 		// check if work space has a angular.json file
 		const angularJsonFiles = await this.getAngularJsonFile();
 		this._logger.debug(`angular json files found:`, angularJsonFiles);
-		return new Promise((resolve) => {
-			if (!angularJsonFiles || angularJsonFiles.length === 0) {
-				this._logger.debug(`no angular.json file found in workspace`);
-				resolve(undefined);
-			} else {
-				this._logger.debug(`angular.json file found in workspace at [${angularJsonFiles[0].fsPath}]`);
-				resolve(angularJsonFiles[0]);
-			}
-		});
+		if (!angularJsonFiles || angularJsonFiles.length === 0) {
+			this._logger.debug(`no angular.json file found in workspace`);
+			return undefined;
+		} else {
+			// TODO hanlde if multiple angular json files are found in the workspace
+			this._logger.debug(`angular.json file found in workspace at [${angularJsonFiles[0].fsPath}]`);
+			return angularJsonFiles[0];
+		}
 	}
 
 	/**
@@ -68,6 +67,8 @@ export class AngularProjectReader {
 			case "Pipe":
 				TerminalUtils.createTerminal('ng Helper', `ng g p ${path} ${this.getProjectParam(project)}`);
 				break;
+			case 'Guard':
+				TerminalUtils.createTerminal('ng Helper', `ng g g ${path} ${this.getProjectParam(project)}`);
 		}
 	}
 
@@ -86,7 +87,9 @@ export class AngularProjectReader {
 	 * @description returns the path to be used in cli command from full selected folder path
 	 */
 	private static getCliCommandPathFromFullPath(folderPath: string): string {
-		let commandPath = folderPath.substring(folderPath.indexOf('app') + 3);
+		const paths = folderPath.split(path.sep);
+		const appFolderIndex = paths.indexOf('app');
+		let commandPath = paths.slice(appFolderIndex + 1).join(path.sep);
 		commandPath = this.removeLeadingAndTrailingSlashes(commandPath);
 		this._logger.debug(`returning command path as [${commandPath}] for path [${folderPath}]`);
 		return commandPath;
@@ -102,8 +105,8 @@ export class AngularProjectReader {
 		}
 		this._logger.debug(`removing slashes from ${rawString}`);
 		rawString = path.normalize(rawString);
-		rawString = rawString.startsWith('\\') || rawString.startsWith('/') ? rawString.substring(1) : rawString;
-		rawString = rawString.endsWith('\\') || rawString.endsWith('/') ? rawString.substring(0, rawString.length - 1) : rawString;
+		rawString = rawString.startsWith(path.sep) ? rawString.substring(path.sep.length) : rawString;
+		rawString = rawString.endsWith(path.sep) ? rawString.substring(0, rawString.length - path.sep.length) : rawString;
 		this._logger.debug(`returning path after normalizing [${rawString}]`);
 		return rawString;
 	}
@@ -121,7 +124,7 @@ export class AngularProjectReader {
 	}
 
 	/**
-	 * returns the name of the project which as given projectSrcRoot and empty if reuired project is default
+	 * returns the name of the project which has given projectSrcRoot and empty if required project is default
 	 * project
 	 */
 	private static getProjectNameWithSrcRoot(angularJSONContents: any, srcRoot: string): string {
@@ -159,20 +162,26 @@ export class AngularProjectReader {
 	 * returs the project soure root path from the given path
 	 */
 	private static getProjectSourceRootFromPath(folderPath: string): string {
-		if (vscode.workspace.workspaceFolders) {
-			this._logger.debug(`calculating project src path for [${folderPath}]`);
-			const workSpaceFolderPath = vscode.workspace.workspaceFolders[0];
-			this._logger.debug(`work space root is [${workSpaceFolderPath.uri.fsPath}]`);
-			// remove workspace root path
-			folderPath = folderPath.substring(workSpaceFolderPath.uri.fsPath.length);
-			// remove path appearing after app
-			folderPath = folderPath.substring(0, folderPath.indexOf('app'));
-			// remove trailing and leading slashes if any
-			folderPath = this.removeLeadingAndTrailingSlashes(folderPath);
-			this._logger.debug(`project src calculated is [${folderPath}]`);
-			return folderPath;
+		if (!vscode.workspace.workspaceFolders) {
+			return '';
 		}
-		return '';
+		this._logger.debug(`calculating project src path for [${folderPath}]`);
+		const workSpaceFolderPath = vscode.workspace.workspaceFolders[0];
+		this._logger.debug(`work space root is [${workSpaceFolderPath.uri.fsPath}]`);
+		// remove workspace root path
+		folderPath = folderPath.substring(workSpaceFolderPath.uri.fsPath.length);
+		// remove path appearing after app
+		const paths = folderPath.split(path.sep);
+		const appFolderIndex = paths.indexOf('app');
+		if (appFolderIndex === -1) {
+			this._logger.debug(`No app folder found!`);
+			return '';
+		}
+		folderPath = path.join(...paths.slice(0, appFolderIndex));
+		// remove trailing and leading slashes if any
+		folderPath = this.removeLeadingAndTrailingSlashes(folderPath);
+		this._logger.debug(`project src calculated is [${folderPath}]`);
+		return folderPath;
 	}
 
 	/**
